@@ -7,39 +7,61 @@
     <title>Booking app</title>
 </head>
 <body>
-    <form onsubmit="saveToLocalStorage()">
+    <form onsubmit="saveToLocalStorage(event)">
     <label>Name :</label> 
-    <input type="text" name="username" required/><br><br>
+    <input type="text" name="username" placeholder="Enter your name" required/><br><br>
     <label>Email :</label> 
-    <input type="email" name="emailId" required/><br><br>
+    <input type="email" name="emailId" placeholder="Enter your email" required/><br><br>
     <label>Phone Number :</label> 
-    <input type="tel" name="phonenumber" required/><br><br>
-    <input type="button" value="delete">
-    <input type="button" value="editButton">
+    <input type="tel" name="phonenumber" /><br><br>
+    
 <button>Submit</button>
     </form>
     <ul id="listOfitems"> 
-    <li>Divya Joshi  joshidivya#gmail.com  7788848388</li>
-    <li>vidya Joshi  joshivya#gmail.com  7788858388</li>
+
 </ul>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.5/axios.min.js"></script>
     <script>
         function saveToLocalStorage(event){
             event.preventDefault();
             const name =event.target.username.value;
-            const email =event.target.email.value;
+            const email =event.target.emailId.value;
             const phonenumber =event.target.phonenumber.value;
-localStorage.setItem('name',name);
-localStorage.setItem('email',email);
-localStorage.setItem('phonenumber',phonenumber);
+// localStorage.setItem('name',name);
+// localStorage.setItem('email',email);
+// localStorage.setItem('phonenumber',phonenumber);
 
 const obj={
     name,
     email,
     phonenumber
 }
-localStorage.setItem(obj.email,JSON.stringify(obj))
-showUserOnScreen(obj);
+
+axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmentData" , obj)
+.then((response) => {
+  showUserOnScreen(response.data)
+  console.log(response)
+})
+.catch((err) =>{
+  console.log(err)
+})
+//localStorage.setItem(obj.email,JSON.stringify(obj))
+//showUserOnScreen(obj);
         }
+
+        window.addEventListener("DOMContentLoaded" ,() => {
+          const localStorageObj = localStorage;
+          const localstoragekeys = Object.keys(localStorageObj);
+
+          for(var i=0; i<localStorage.length; i++)
+          {
+            const key = localstoragekeys[i];
+            const userDetailsString = localStorageObj[key];
+            const userDetailsObj = JSON.parse(userDetailsString);
+            showUserOnScreen(userDetailsObj);
+          }
+        })
+
         function showUserOnScreen(obj) {
   const parentElem = document.getElementById('listOfitems');
 
@@ -54,17 +76,18 @@ showUserOnScreen(obj);
     childElem.setAttribute('id', obj.email);
 
     // Create a delete button
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.addEventListener('click', function() {
+    const deleteUser = document.createElement('button');
+    deleteUser.textContent = 'Delete user';
+    deleteUser.addEventListener('click', function(event) {
       deleteUser(obj.email);
       parentElem.removeChild(childElem);
+      localStorage.removeItem(obj.email);
     });
 
     // Create an edit button
-    const editButton = document.createElement('editButton');
-    editButton.textContent = 'Edit';
-    editButton.addEventListener('click', function() {
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit user';
+    editButton.addEventListener('click', function(event) {
       // Populate the form with the user's information
       document.querySelector('input[name="username"]').value = obj.name;
       document.querySelector('input[name="emailId"]').value = obj.email;

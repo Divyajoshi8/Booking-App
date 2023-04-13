@@ -40,7 +40,7 @@ const obj={
 axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmentData" , obj)
 .then((response) => {
   showUserOnScreen(response.data)
-  console.log(response)
+  //console.log(response)
 })
 .catch((err) =>{
   console.log(err)
@@ -50,6 +50,20 @@ axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmen
         }
 
         window.addEventListener("DOMContentLoaded" ,() => {
+          axios.get("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmentData")
+          .then((response) => {
+           showUserOnScreen(response.data)
+              console.log(response)
+              for(var i=0; i<response.data.length; i++)
+              {
+                showUserOnScreen(response.data[i])
+              }
+            })
+          .catch((err) =>{
+            console.log(err)
+           })
+
+
           const localStorageObj = localStorage;
           const localstoragekeys = Object.keys(localStorageObj);
 
@@ -57,12 +71,20 @@ axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmen
           {
             const key = localstoragekeys[i];
             const userDetailsString = localStorageObj[key];
-            const userDetailsObj = JSON.parse(userDetailsString);
-            showUserOnScreen(userDetailsObj);
+            //const userDetailsObj = JSON.parse(userDetailsString);
+            //showUserOnScreen(userDetailsObj);
           }
         })
 
         function showUserOnScreen(obj) {
+          // document.getElementById('email').value ='';
+          // document.getElementById('username').value ='';
+          // document.getElementById('phonenumber').value ='';
+
+          // if(localStorage.getItem(user.email) !==null)
+          // {
+          //   removeUserFromScreen(user.email);
+          // }
   const parentElem = document.getElementById('listOfitems');
 
   // Check if the user is already in the list
@@ -79,7 +101,7 @@ axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmen
     const deleteUser = document.createElement('button');
     deleteUser.textContent = 'Delete user';
     deleteUser.addEventListener('click', function(event) {
-      deleteUser(obj.email);
+      
       parentElem.removeChild(childElem);
       localStorage.removeItem(obj.email);
     });
@@ -100,7 +122,7 @@ axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmen
 
     // Add the user's information and buttons to the list item
     childElem.textContent = obj.name + ' - ' + obj.email + ' - ' + obj.phonenumber;
-    childElem.appendChild(deleteButton);
+    childElem.appendChild(deleteUser);
     childElem.appendChild(editButton);
     parentElem.appendChild(childElem);
   }

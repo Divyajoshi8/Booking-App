@@ -100,11 +100,23 @@ axios.post("https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmen
     // Create a delete button
     const deleteUser = document.createElement('button');
     deleteUser.textContent = 'Delete user';
-    deleteUser.addEventListener('click', function(event) {
+
+    deleteUser.addEventListener('click', function(userId) {
+      axios.delete(`https://crudcrud.com/api/b068c966ab1c4c3ab3139aa6cd612864/appointmentData/${userId}`)
+                    .then((response)=> {
+                        removeUserFromScreen(userId)
+                    })
+                    .catch((err)=> {
+                        console.log(err)
+                    })
       
       parentElem.removeChild(childElem);
       localStorage.removeItem(obj.email);
     });
+
+    
+    
+                
 
     // Create an edit button
     const editButton = document.createElement('button');
